@@ -3,6 +3,7 @@
 
 import Hero from "@/components/Hero";
 import ServicesSection from "@/components/ServicesSection";
+import Testimonials from "@/components/Testimonials";
 import HowItWorks from "@/components/HowItWorks";
 import TrustSection from "@/components/TrustSection";
 
@@ -11,6 +12,7 @@ export default function Home() {
     <main>
       <Hero />
       <ServicesSection />
+      <Testimonials />
       <HowItWorks />
       <TrustSection />
     </main>

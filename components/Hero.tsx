@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { CheckCircle } from "lucide-react";
 import styles from "@/styles/hero.module.css";
 
-const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "51999999999";
+const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "51978797239";
 const heroMessage = encodeURIComponent("Hola, necesito un servicio en Piura. ¿Me pueden ayudar?");
 
 const SLIDES = [
