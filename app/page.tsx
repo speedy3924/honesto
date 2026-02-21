@@ -2,6 +2,7 @@
 // Página principal de HONESTO.pe (single-page MVP)
 
 import Hero from "@/components/Hero";
+import RequestForm from "@/components/RequestForm";
 import ServicesSection from "@/components/ServicesSection";
 import Testimonials from "@/components/Testimonials";
 import HowItWorks from "@/components/HowItWorks";
@@ -11,6 +12,7 @@ export default function Home() {
   return (
     <main>
       <Hero />
+      <RequestForm />
       <ServicesSection />
       <Testimonials />
       <HowItWorks />
