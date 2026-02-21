@@ -33,7 +33,7 @@ export default function Testimonials() {
     <section className={styles.section}>
       <div className="container">
         <h2 className={styles.title}>Lo que dicen nuestros clientes</h2>
-        <p className={styles.subtitle}>Personas reales de Piura que ya confiaron en HONESTO.pe</p>
+        <p className={styles.subtitle}>Personas reales de Piura que ya confiaron en HONESTOpe</p>
         <div className={styles.grid}>
           {TESTIMONIALS.map((t) => (
             <div key={t.name} className={styles.card}>
