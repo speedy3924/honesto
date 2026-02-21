@@ -6,7 +6,12 @@ import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import styles from "@/styles/requestform.module.css";
 
-const SERVICES = ["Gasfitería", "Electricidad", "Pintura", "Albañilería Ligera", "Limpieza"];
+const SERVICES = [
+  "Gasfitería", "Electricidad", "Pintura", "Albañilería",
+  "Limpieza", "Decoración de Eventos", "Catering", "Sastrería y Costura",
+  "Lavandería", "Clases Particulares", "Carpintería",
+  "Armado de Muebles", "Mudanzas", "Jardinería"
+];
 
 const DISTRICTS = ["Piura", "Castilla", "Catacaos", "La Arena", "La Unión", "Tambogrande", "Sullana", "Paita", "Otro"];
 

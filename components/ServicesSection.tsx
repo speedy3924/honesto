@@ -43,7 +43,7 @@ const SERVICES: Service[] = [
     id: "decoracion",
     name: "Decoración",
     description: "Decoración de eventos y celebraciones",
-    icon: <Image src="https://img.icons8.com/color/96/balloon.png" alt="Decoración" width={64} height={64} unoptimized />,
+    icon: <Image src="https://img.icons8.com/color/96/confetti.png" alt="Decoración" width={64} height={64} unoptimized />,
     waMessage: "Hola, necesito *decoración para un evento* en Piura.\nTipo de evento:\nFecha:\nDistrito:",
   },
   {
