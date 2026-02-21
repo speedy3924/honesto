@@ -54,8 +54,8 @@ const SERVICES: Service[] = [
     waMessage: "Hola, necesito un servicio de *catering* en Piura.\nTipo de evento:\nDistrito:",
   },
   {
-    id: "sastreria y Costura",
-    name: "Sastrería",
+    id: "sastreria",
+    name: "Sastrería y Costura",
     description: "Costura, confección y arreglos",
     icon: <Image src="https://img.icons8.com/color/96/sewing-machine.png" alt="Sastrería" width={64} height={64} unoptimized />,
     waMessage: "Hola, necesito un servicio de *sastrería* en Piura.\nTipo de trabajo:\nDistrito:",
