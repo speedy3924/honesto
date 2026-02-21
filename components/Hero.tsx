@@ -29,14 +29,18 @@ export default function Hero() {
       <header className={styles.header}>
         <div className={`container ${styles.headerInner}`}>
           <div className={styles.logo}>
-            <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
-              <circle cx="18" cy="18" r="18" fill="#e8f0fc" />
-              <circle cx="18" cy="14" r="7" fill="#1a6fd4" />
-              <path d="M7 30c0-6 4.9-10 11-10s11 4 11 10" fill="#2a9d5c" />
-              <circle cx="15.5" cy="13" r="1.2" fill="white" />
-              <circle cx="20.5" cy="13" r="1.2" fill="white" />
-              <path d="M15.5 16.5 Q18 19 20.5 16.5" stroke="white" strokeWidth="1.2" fill="none" strokeLinecap="round" />
-            </svg>
+            <svg width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="38" height="38" rx="10" fill="#1a6fd4"/>
+  {/* Casco */}
+  <ellipse cx="19" cy="13" rx="9" ry="4" fill="#f5c842"/>
+  <rect x="10" y="13" width="18" height="3" rx="1.5" fill="#e6b800"/>
+  {/* Cabeza */}
+  <circle cx="19" cy="20" r="5" fill="#f5c842"/>
+  {/* Cuerpo con overol */}
+  <path d="M11 34c0-5 3.6-8 8-8s8 3 8 8" fill="#2a9d5c"/>
+  {/* Cuello */}
+  <rect x="17" y="24" width="4" height="3" fill="#f5c842"/>
+</svg>
             <span className={styles.logoText}>HONESTO<span>.pe</span></span>
           </div>
           <nav className={styles.nav}>
