@@ -42,15 +42,15 @@ const SERVICES: Service[] = [
   {
     id: "decoracion",
     name: "Decoración",
-    description: "Diseño y decoración de espacios",
-    icon: <Image src="https://img.icons8.com/color/96/interior.png" alt="Decoración" width={64} height={64} unoptimized />,
-    waMessage: "Hola, necesito un servicio de *decoración* en Piura.\nTipo de trabajo:\nDistrito:",
+    description: "Decoración de eventos y celebraciones",
+    icon: <Image src="https://img.icons8.com/color/96/balloon.png" alt="Decoración" width={64} height={64} unoptimized />,
+    waMessage: "Hola, necesito *decoración para un evento* en Piura.\nTipo de evento:\nFecha:\nDistrito:",
   },
   {
     id: "catering",
     name: "Catering",
     description: "Servicio de comida para eventos",
-    icon: <Image src="https://img.icons8.com/color/96/catering.png" alt="Catering" width={64} height={64} unoptimized />,
+    icon: <Image src="https://img.icons8.com/color/96/chef-hat.png" alt="Catering" width={64} height={64} unoptimized />,
     waMessage: "Hola, necesito un servicio de *catering* en Piura.\nTipo de evento:\nDistrito:",
   },
   {
@@ -78,7 +78,7 @@ const SERVICES: Service[] = [
     id: "carpinteria",
     name: "Carpintería",
     description: "Muebles, puertas y madera",
-    icon: <Image src="https://img.icons8.com/color/96/carpenter.png" alt="Carpintería" width={64} height={64} unoptimized />,
+    icon: <Image src="https://img.icons8.com/color/96/saw.png" alt="Carpintería" width={64} height={64} unoptimized />,
     waMessage: "Hola, necesito un servicio de *carpintería* en Piura.\nTipo de trabajo:\nDistrito:",
   },
   {
@@ -92,14 +92,14 @@ const SERVICES: Service[] = [
     id: "mudanzas",
     name: "Mudanzas",
     description: "Traslado seguro de enseres",
-    icon: <Image src="https://img.icons8.com/color/96/moving-truck.png" alt="Mudanzas" width={64} height={64} unoptimized />,
+    icon: <Image src="https://img.icons8.com/color/96/truck.png" alt="Mudanzas" width={64} height={64} unoptimized />,
     waMessage: "Hola, necesito un servicio de *mudanza* en Piura.\nOrigen:\nDestino:",
   },
   {
     id: "jardineria",
     name: "Jardinería",
     description: "Jardines, podas y mantenimiento",
-    icon: <Image src="https://img.icons8.com/color/96/gardening.png" alt="Jardinería" width={64} height={64} unoptimized />,
+    icon: <Image src="https://img.icons8.com/color/96/potted-plant.png" alt="Jardinería" width={64} height={64} unoptimized />,
     waMessage: "Hola, necesito un servicio de *jardinería* en Piura.\nTipo de trabajo:\nDistrito:",
   },
 ];
