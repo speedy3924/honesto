@@ -1,0 +1,3 @@
+<div className={styles.logo}>
+  <img src="/logo.png" alt="HONESTO.pe" height={48} style={{ objectFit: "contain" }} />
+</div>

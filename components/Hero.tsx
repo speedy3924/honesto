@@ -29,20 +29,8 @@ export default function Hero() {
       <header className={styles.header}>
         <div className={`container ${styles.headerInner}`}>
           <div className={styles.logo}>
-            <svg width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="38" height="38" rx="10" fill="#1a6fd4"/>
-  {/* Casco */}
-  <ellipse cx="19" cy="13" rx="9" ry="4" fill="#f5c842"/>
-  <rect x="10" y="13" width="18" height="3" rx="1.5" fill="#e6b800"/>
-  {/* Cabeza */}
-  <circle cx="19" cy="20" r="5" fill="#f5c842"/>
-  {/* Cuerpo con overol */}
-  <path d="M11 34c0-5 3.6-8 8-8s8 3 8 8" fill="#2a9d5c"/>
-  {/* Cuello */}
-  <rect x="17" y="24" width="4" height="3" fill="#f5c842"/>
-</svg>
-            <span className={styles.logoText}>HONESTO<span>.pe</span></span>
-          </div>
+  <img src="/logo.png" alt="HONESTO.pe" height={48} style={{ objectFit: "contain" }} />
+</div>
           <nav className={styles.nav}>
             <a href="#servicios">Servicios</a>
             <a href="#como-funciona">Cómo funciona</a>
