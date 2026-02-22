@@ -77,9 +77,7 @@ export default function Hero() {
             Conectamos personas con técnicos verificados, sin vueltas y con atención humana.
           </p>
           
-           <a href={`https://wa.me/${WHATSAPP_NUMBER}?text=${heroMessage}`}
-            target="_blank"
-            rel="noopener noreferrer"
+           <a href="#solicitar"
             className={styles.heroCta}
       >
             🔵 Necesito un servicio ahora

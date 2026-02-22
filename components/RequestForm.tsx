@@ -1,4 +1,3 @@
-// components/RequestForm.tsx
 "use client";
 
 import { useState } from "react";
@@ -14,6 +13,8 @@ const SERVICES = [
 ];
 
 const DISTRICTS = ["Piura", "Castilla", "Catacaos", "La Arena", "La Unión", "Tambogrande", "Sullana", "Paita", "Otro"];
+
+const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "51978797239";
 
 export default function RequestForm() {
   const [form, setForm] = useState({ name: "", phone: "", service: "", district: "", description: "" });
@@ -42,12 +43,24 @@ export default function RequestForm() {
   };
 
   if (status === "success") {
+    const waMessage = encodeURIComponent(
+      `Hola, acabo de enviar una solicitud desde HONESTOpe.\nNombre: ${form.name}\nServicio: ${form.service}\nDistrito: ${form.district}\nTeléfono: ${form.phone}${form.description ? `\nDetalle: ${form.description}` : ""}`
+    );
     return (
       <section className={styles.section}>
         <div className={`container ${styles.successBox}`}>
           <div className={styles.successIcon}>✅</div>
           <h3>¡Solicitud recibida!</h3>
           <p>Te contactaremos en menos de 30 minutos al número <strong>{form.phone}</strong>.</p>
+          <p className={styles.successSub}>También puedes escribirnos directamente por WhatsApp:</p>
+          
+            href={`https://wa.me/${WHATSAPP_NUMBER}?text=${waMessage}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={styles.waBtn}
+          >
+            Confirmar por WhatsApp
+          </a>
           <button className={styles.resetBtn} onClick={() => { setForm({ name: "", phone: "", service: "", district: "", description: "" }); setStatus("idle"); }}>
             Hacer otra solicitud
           </button>
@@ -91,9 +104,9 @@ export default function RequestForm() {
             <textarea name="description" value={form.description} onChange={handleChange} placeholder="Ej: Tengo una filtración en el baño del segundo piso..." rows={3} />
           </div>
           <button className={styles.submitBtn} onClick={handleSubmit} disabled={status === "loading"}>
-            {status === "loading" ? "Enviando..." : "📩 Solicitar servicio ahora"}
+            {status === "loading" ? "Enviando..." : "Solicitar servicio ahora"}
           </button>
-          <p className={styles.note}>Sin compromisos. Te llamamos gratis para coordinar.</p>
+          <p className={styles.note}>Sin compromisos. Te contactamos gratis para coordinar.</p>
         </div>
       </div>
     </section>
