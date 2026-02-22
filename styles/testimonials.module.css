@@ -18,9 +18,10 @@
   font-size: 16px;
 }
 
+/* Desktop: grid normal */
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 24px;
 }
 
@@ -75,4 +76,31 @@
 .meta {
   font-size: 13px;
   color: var(--color-text-muted);
+}
+
+/* Móvil: carrusel horizontal deslizable */
+@media (max-width: 640px) {
+  .section {
+    padding: 48px 0;
+  }
+
+  .grid {
+    display: flex;
+    overflow-x: auto;
+    gap: 14px;
+    padding: 0 20px 16px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .card {
+    min-width: 80vw;
+    scroll-snap-align: start;
+    flex-shrink: 0;
+  }
 }

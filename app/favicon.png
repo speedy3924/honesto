@@ -1,3 +1,8 @@
-<div className={styles.logo}>
-  <img src="/logo.png" alt="HONESTO.pe" height={48} style={{ objectFit: "contain" }} />
-</div>
+export const metadata: Metadata = {
+  title: "HONESTOpe — Servicios confiables en Piura",
+  description: "Conectamos personas con técnicos verificados...",
+  keywords: "servicios hogar Piura...",
+  icons: {
+    icon: "/logo.png",
+  },
+};
