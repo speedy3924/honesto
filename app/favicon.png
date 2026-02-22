@@ -1,8 +1,0 @@
-export const metadata: Metadata = {
-  title: "HONESTOpe — Servicios confiables en Piura",
-  description: "Conectamos personas con técnicos verificados...",
-  keywords: "servicios hogar Piura...",
-  icons: {
-    icon: "/logo.png",
-  },
-};
