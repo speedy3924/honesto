@@ -7,7 +7,7 @@
   position: sticky;
   top: 0;
   z-index: 100;
-  height: 56px;
+  height: 64px;
   display: flex;
   align-items: center;
 }
@@ -16,20 +16,25 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  height: 56px;
+  height: 64px;
   width: 100%;
 }
 
 .logo {
   display: flex;
   align-items: center;
+  /* Compensa el espacio transparente del PNG */
+  margin-left: -12px;
 }
 
 .logo img {
-  height: 36px;
-  width: 160px;
+  height: 64px;
+  width: 220px;
   object-fit: contain;
   object-position: left center;
+  /* Escala visualmente el logo para que ocupe más espacio */
+  transform: scale(1.15);
+  transform-origin: left center;
 }
 
 .nav {
@@ -62,7 +67,7 @@
 .mobileMenu {
   display: none;
   position: fixed;
-  top: 56px;
+  top: 64px;
   left: 0;
   right: 0;
   background: var(--color-white);
@@ -94,7 +99,7 @@
 .hero {
   position: relative;
   overflow: hidden;
-  padding: 48px 0 52px;
+  padding: 40px 0 44px;
   text-align: center;
 }
 
@@ -228,16 +233,21 @@
 /* ── MÓVIL ── */
 @media (max-width: 640px) {
   .header {
-    height: 52px;
+    height: 58px;
   }
 
   .headerInner {
-    height: 52px;
+    height: 58px;
+  }
+
+  .logo {
+    margin-left: -8px;
   }
 
   .logo img {
-    height: 32px;
-    width: 140px;
+    height: 58px;
+    width: 190px;
+    transform: scale(1.1);
   }
 
   .nav {
@@ -251,11 +261,11 @@
   }
 
   .mobileMenu {
-    top: 52px;
+    top: 58px;
   }
 
   .hero {
-    padding: 36px 0 40px;
+    padding: 32px 0 36px;
   }
 
   .heroCta {
