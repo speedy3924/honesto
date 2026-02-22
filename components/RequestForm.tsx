@@ -32,10 +32,11 @@ export default function RequestForm() {
     setStatus("loading");
     try {
       await addDoc(collection(db, "service_requests"), {
-        ...form,
-        createdAt: serverTimestamp(),
-        status: "pending",
-      });
+  ...form,
+  createdAt: serverTimestamp(),
+  status: "pending",
+  source: "form",
+});
       setStatus("success");
     } catch (e) {
       setStatus("error");
