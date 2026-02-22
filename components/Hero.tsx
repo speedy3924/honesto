@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { CheckCircle } from "lucide-react";
+import { CheckCircle, Menu, X } from "lucide-react";
 import styles from "@/styles/hero.module.css";
 
 const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "51978797239";
@@ -16,6 +16,7 @@ const SLIDES = [
 
 export default function Hero() {
   const [current, setCurrent] = useState(0);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -29,15 +30,32 @@ export default function Hero() {
       <header className={styles.header}>
         <div className={`container ${styles.headerInner}`}>
           <div className={styles.logo}>
-  <img src="/logo.png" alt="HONESTO.pe" height={90} style={{ objectFit: "contain" }} />
-</div>
+            <img
+              src="/logo.png"
+              alt="HONESTOpe"
+              style={{ height: "36px", width: "160px", objectFit: "contain", objectPosition: "left center" }}
+            />
+          </div>
           <nav className={styles.nav}>
             <a href="#servicios">Servicios</a>
             <a href="#como-funciona">Cómo funciona</a>
             <a href="#confianza">¿Por qué elegirnos?</a>
           </nav>
+          <button
+            className={styles.menuBtn}
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label="Menú"
+          >
+            {menuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
       </header>
+
+      <div className={`${styles.mobileMenu} ${menuOpen ? styles.open : ""}`}>
+        <a href="#servicios" onClick={() => setMenuOpen(false)}>Servicios</a>
+        <a href="#como-funciona" onClick={() => setMenuOpen(false)}>Cómo funciona</a>
+        <a href="#confianza" onClick={() => setMenuOpen(false)}>¿Por qué elegirnos?</a>
+      </div>
 
       <section className={styles.hero}>
         <div className={styles.carouselBg}>
@@ -58,18 +76,18 @@ export default function Hero() {
           <p className={styles.heroSubtitle}>
             Conectamos personas con técnicos verificados, sin vueltas y con atención humana.
           </p>
-          <a
-            href={`https://wa.me/${WHATSAPP_NUMBER}?text=${heroMessage}`}
+          
+           <a href={`https://wa.me/${WHATSAPP_NUMBER}?text=${heroMessage}`}
             target="_blank"
             rel="noopener noreferrer"
             className={styles.heroCta}
-          >
+      >
             🔵 Necesito un servicio ahora
           </a>
           <div className={styles.heroBadges}>
             {["Técnicos verificados", "Atención humana", "Sin pagos adelantados"].map((label) => (
               <span key={label} className={styles.badge}>
-                <CheckCircle size={15} className={styles.badgeIcon} />
+                <CheckCircle size={14} className={styles.badgeIcon} />
                 {label}
               </span>
             ))}

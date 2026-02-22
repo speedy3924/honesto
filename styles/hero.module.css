@@ -1,40 +1,41 @@
 /* styles/hero.module.css */
 
+/* ── HEADER ── */
 .header {
   background: var(--color-white);
   border-bottom: 1px solid var(--color-border);
-  padding: 14px 0;
   position: sticky;
   top: 0;
   z-index: 100;
+  height: 56px;
+  display: flex;
+  align-items: center;
 }
 
 .headerInner {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  height: 56px;
+  width: 100%;
 }
 
 .logo {
   display: flex;
   align-items: center;
-  gap: 10px;
 }
 
-.logoText {
-  font-size: 22px;
-  font-weight: 800;
-  color: var(--color-primary);
-  letter-spacing: -0.5px;
-}
-
-.logoText span {
-  color: var(--color-green);
+.logo img {
+  height: 36px;
+  width: 160px;
+  object-fit: contain;
+  object-position: left center;
 }
 
 .nav {
   display: flex;
   gap: 28px;
+  align-items: center;
 }
 
 .nav a {
@@ -42,110 +43,59 @@
   color: var(--color-text-muted);
   font-weight: 500;
   transition: color 0.2s;
+  white-space: nowrap;
 }
 
 .nav a:hover {
   color: var(--color-primary);
 }
 
-/* Hero section */
-.hero {
-  background: linear-gradient(160deg, #eef4ff 0%, #f7f9ff 60%, #ffffff 100%);
-  padding: 80px 0 90px;
-  text-align: center;
-}
-
-.heroContent {
-  max-width: 680px;
-  margin: 0 auto;
-}
-
-.heroTitle {
-  font-size: clamp(32px, 5vw, 52px);
-  font-weight: 800;
-  color: var(--color-text);
-  line-height: 1.2;
-  margin-bottom: 18px;
-  letter-spacing: -0.5px;
-}
-
-.heroTitle span {
-  color: #ffffff;
-  text-shadow: 0 2px 12px rgba(0,0,0,0.8);
-}
-
-
-
-.heroCta {
-  display: inline-block;
-  background: var(--color-primary);
-  color: var(--color-white);
-  font-size: 20px;
-  font-weight: 700;
-  padding: 20px 48px;
-  border-radius: var(--radius-lg);
+.menuBtn {
+  display: none;
+  background: none;
   border: none;
   cursor: pointer;
-  text-decoration: none;
-  box-shadow: var(--shadow-button);
-  transition: background 0.2s, transform 0.15s;
-  letter-spacing: 0.2px;
+  padding: 4px;
+  color: var(--color-text);
 }
 
-.heroCta:hover {
-  background: var(--color-primary-dark);
-  transform: translateY(-2px);
-}
-
-.heroCta:active {
-  transform: translateY(0);
-}
-
-.heroBadges {
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  margin-top: 36px;
-  flex-wrap: wrap;
-}
-
-.badge {
-  display: flex;
-  align-items: center;
-  gap: 6px;
+.mobileMenu {
+  display: none;
+  position: fixed;
+  top: 56px;
+  left: 0;
+  right: 0;
   background: var(--color-white);
-  border: 1px solid var(--color-border);
-  border-radius: 100px;
-  padding: 6px 16px;
-  font-size: 14px;
-  color: var(--color-text-muted);
+  border-bottom: 1px solid var(--color-border);
+  padding: 8px 24px;
+  flex-direction: column;
+  z-index: 99;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.mobileMenu.open {
+  display: flex;
+}
+
+.mobileMenu a {
+  font-size: 16px;
+  color: var(--color-text);
   font-weight: 500;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--color-border);
+  text-decoration: none;
 }
 
-.badgeIcon {
-  color: var(--color-green);
+.mobileMenu a:last-child {
+  border-bottom: none;
 }
 
-@media (max-width: 600px) {
-  .hero {
-    padding: 56px 0 64px;
-  }
-
-  .heroCta {
-    font-size: 18px;
-    padding: 18px 32px;
-    width: 100%;
-    max-width: 360px;
-  }
-
-  .nav {
-    display: none;
-  }
-}
-/* ── Carrusel ── */
+/* ── HERO ── */
 .hero {
   position: relative;
   overflow: hidden;
+  padding: 48px 0 52px;
+  text-align: center;
 }
 
 .carouselBg {
@@ -172,42 +122,91 @@
   inset: 0;
   background: radial-gradient(
     ellipse at center,
-    rgba(0, 0, 0, 0.55) 0%,
-    rgba(0, 0, 0, 0.30) 100%
+    rgba(0,0,0,0.55) 0%,
+    rgba(0,0,0,0.30) 100%
   );
 }
 
 .heroContent {
   position: relative;
   z-index: 1;
+  max-width: 680px;
+  margin: 0 auto;
 }
 
-/* Texto blanco sobre la imagen */
 .heroTitle {
+  font-size: clamp(28px, 5vw, 52px);
+  font-weight: 800;
   color: #ffffff !important;
+  line-height: 1.2;
+  margin-bottom: 16px;
+  letter-spacing: -0.5px;
+  text-shadow: 0 2px 12px rgba(0,0,0,0.6);
+}
+
+.heroTitle span {
+  color: #ffffff;
 }
 
 .heroSubtitle {
-  font-size: clamp(16px, 2.5vw, 19px);
+  font-size: clamp(15px, 2.5vw, 18px);
   color: #ffffff !important;
-  margin-bottom: 40px;
+  margin-bottom: 32px;
   line-height: 1.6;
+  font-weight: 600;
+  text-shadow: 0 2px 6px rgba(0,0,0,0.9);
+}
+
+.heroCta {
+  display: inline-block;
+  background: var(--color-primary);
+  color: var(--color-white);
+  font-size: 18px;
   font-weight: 700;
-  text-shadow: 0 2px 6px rgba(0,0,0,0.9), 0 0px 20px rgba(0,0,0,0.7);
+  padding: 16px 40px;
+  border-radius: var(--radius-lg);
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  box-shadow: var(--shadow-button);
+  transition: background 0.2s, transform 0.15s;
+}
+
+.heroCta:hover {
+  background: var(--color-primary-dark);
+  transform: translateY(-2px);
+}
+
+.heroBadges {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 28px;
+  flex-wrap: wrap;
 }
 
 .badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   background: rgba(255,255,255,0.15) !important;
-  border-color: rgba(255,255,255,0.3) !important;
+  border: 1px solid rgba(255,255,255,0.3) !important;
+  border-radius: 100px;
+  padding: 6px 14px;
+  font-size: 13px;
   color: #ffffff !important;
+  font-weight: 500;
 }
 
-/* Puntos del carrusel */
+.badgeIcon {
+  color: #4ade80;
+}
+
 .dots {
   display: flex;
   justify-content: center;
   gap: 10px;
-  margin-top: 28px;
+  margin-top: 24px;
 }
 
 .dot {
@@ -224,4 +223,52 @@
 .dotActive {
   background: #ffffff;
   transform: scale(1.2);
+}
+
+/* ── MÓVIL ── */
+@media (max-width: 640px) {
+  .header {
+    height: 52px;
+  }
+
+  .headerInner {
+    height: 52px;
+  }
+
+  .logo img {
+    height: 32px;
+    width: 140px;
+  }
+
+  .nav {
+    display: none;
+  }
+
+  .menuBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .mobileMenu {
+    top: 52px;
+  }
+
+  .hero {
+    padding: 36px 0 40px;
+  }
+
+  .heroCta {
+    font-size: 17px;
+    padding: 16px 24px;
+    width: 100%;
+    max-width: 340px;
+  }
+
+  .heroBadges {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-top: 20px;
+  }
 }
