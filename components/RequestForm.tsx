@@ -54,7 +54,7 @@ export default function RequestForm() {
           <p>Te contactaremos en menos de 30 minutos al número <strong>{form.phone}</strong>.</p>
           <p className={styles.successSub}>También puedes escribirnos directamente por WhatsApp:</p>
           
-            href={`https://wa.me/${WHATSAPP_NUMBER}?text=${waMessage}`}
+            <a href={`https://wa.me/${WHATSAPP_NUMBER}?text=${waMessage}`}
             target="_blank"
             rel="noopener noreferrer"
             className={styles.waBtn}
