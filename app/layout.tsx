@@ -7,9 +7,6 @@ export const metadata: Metadata = {
   description:
     "Conectamos personas con técnicos verificados para servicios de hogar y oficina en Piura, Perú. Gasfitería, electricidad, pintura, albañilería y limpieza.",
   keywords: "servicios hogar Piura, técnicos verificados, gasfitería, electricidad, limpieza Piura",
-  icons: {
-    icon: "/favicon.png",
-  },
 };
 
 export default function RootLayout({
