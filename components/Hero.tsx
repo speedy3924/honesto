@@ -29,7 +29,7 @@ export default function Hero() {
       <header className={styles.header}>
         <div className={`container ${styles.headerInner}`}>
           <div className={styles.logo}>
-  <img src="/logo.png" alt="HONESTO.pe" height={200} style={{ objectFit: "contain" }} />
+  <img src="/logo.png" alt="HONESTO.pe" height={90} style={{ objectFit: "contain" }} />
 </div>
           <nav className={styles.nav}>
             <a href="#servicios">Servicios</a>
