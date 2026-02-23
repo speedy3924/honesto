@@ -1,5 +1,5 @@
 // app/page.tsx
-// Página principal de HONESTO.pe (single-page MVP)
+// Página principal de HONESTOpe (single-page MVP)
 
 import Hero from "@/components/Hero";
 import RequestForm from "@/components/RequestForm";
