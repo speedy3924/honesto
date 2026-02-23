@@ -1,8 +1,7 @@
-// app/admin/page.tsx
 "use client";
 
-import { useState, useEffect } from "react";
-import { collection, getDocs, doc, updateDoc, orderBy, query } from "firebase/firestore";
+import { useState, useEffect, useRef } from "react";
+import { collection, doc, updateDoc, orderBy, query, onSnapshot } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 import styles from "@/styles/admin.module.css";
 
@@ -36,36 +35,65 @@ export default function AdminPage() {
   const [authed, setAuthed] = useState(false);
   const [password, setPassword] = useState("");
   const [requests, setRequests] = useState<Request[]>([]);
-  const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState("all");
+  const [newAlert, setNewAlert] = useState(false);
+  const prevCountRef = useRef(0);
+  const audioRef = useRef<AudioContext | null>(null);
+
+  const playAlert = () => {
+    try {
+      const ctx = new AudioContext();
+      const oscillator = ctx.createOscillator();
+      const gain = ctx.createGain();
+      oscillator.connect(gain);
+      gain.connect(ctx.destination);
+      oscillator.frequency.setValueAtTime(880, ctx.currentTime);
+      oscillator.frequency.setValueAtTime(660, ctx.currentTime + 0.1);
+      gain.gain.setValueAtTime(0.3, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.5);
+      oscillator.start(ctx.currentTime);
+      oscillator.stop(ctx.currentTime + 0.5);
+    } catch (e) {}
+  };
+
+  useEffect(() => {
+    if (!authed) return;
+
+    const q = query(collection(db, "service_requests"), orderBy("createdAt", "desc"));
+    const unsub = onSnapshot(q, (snap) => {
+      const data = snap.docs
+        .map(d => ({ id: d.id, ...d.data() } as Request))
+        .filter(r => r.name);
+      
+      if (prevCountRef.current > 0 && data.length > prevCountRef.current) {
+        playAlert();
+        setNewAlert(true);
+        setTimeout(() => setNewAlert(false), 4000);
+      }
+      prevCountRef.current = data.length;
+      setRequests(data);
+    });
+
+    return () => unsub();
+  }, [authed]);
 
   const handleLogin = () => {
     if (password === process.env.NEXT_PUBLIC_ADMIN_PASSWORD) {
       setAuthed(true);
-      loadRequests();
     } else {
       alert("Contraseña incorrecta");
     }
   };
 
-  const loadRequests = async () => {
-    setLoading(true);
-    try {
-      const q = query(collection(db, "service_requests"), orderBy("createdAt", "desc"));
-      const snap = await getDocs(q);
-      const data = snap.docs
-        .map(d => ({ id: d.id, ...d.data() } as Request))
-        .filter(r => r.name); // solo registros del formulario
-      setRequests(data);
-    } catch (e) {
-      alert("Error cargando solicitudes");
-    }
-    setLoading(false);
+  const handleLogout = () => {
+    setAuthed(false);
+    setPassword("");
+    setRequests([]);
+    prevCountRef.current = 0;
   };
 
   const updateStatus = async (id: string, newStatus: string) => {
     await updateDoc(doc(db, "service_requests", id), { status: newStatus });
-    setRequests(prev => prev.map(r => r.id === id ? { ...r, status: newStatus } : r));
   };
 
   const filtered = filter === "all" ? requests : requests.filter(r => r.status === filter);
@@ -84,6 +112,7 @@ export default function AdminPage() {
             onKeyDown={e => e.key === "Enter" && handleLogin()}
             placeholder="Contraseña"
             className={styles.passwordInput}
+            autoFocus
           />
           <button className={styles.loginBtn} onClick={handleLogin}>
             Ingresar
@@ -95,10 +124,16 @@ export default function AdminPage() {
 
   return (
     <div className={styles.wrap}>
+      {newAlert && (
+        <div className={styles.alertBanner}>
+          Nueva solicitud recibida
+        </div>
+      )}
+
       <div className={styles.topBar}>
         <img src="/logo.png" alt="HONESTOpe" style={{ height: 36 }} />
         <span className={styles.badge}>{requests.length} solicitudes</span>
-        <button className={styles.refreshBtn} onClick={loadRequests}>Actualizar</button>
+        <button className={styles.logoutBtn} onClick={handleLogout}>Salir</button>
       </div>
 
       <div className={styles.filters}>
@@ -113,9 +148,7 @@ export default function AdminPage() {
         ))}
       </div>
 
-      {loading ? (
-        <p className={styles.loading}>Cargando solicitudes...</p>
-      ) : filtered.length === 0 ? (
+      {filtered.length === 0 ? (
         <p className={styles.empty}>No hay solicitudes en esta categoría.</p>
       ) : (
         <div className={styles.grid}>
@@ -140,17 +173,14 @@ export default function AdminPage() {
 
               <div className={styles.actions}>
                 
-                  <a href={`https://wa.me/51${r.phone}`}
+                 <a href={`https://wa.me/51${r.phone}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className={styles.waBtn}
                 >
                   WhatsApp
                 </a>
-                
-                <a href={`tel:${r.phone}`}
-                  className={styles.callBtn}
-                >
+                <a href={`tel:${r.phone}`} className={styles.callBtn}>
                   Llamar
                 </a>
               </div>
