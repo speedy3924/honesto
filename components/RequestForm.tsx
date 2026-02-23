@@ -23,7 +23,21 @@ export default function RequestForm() {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
-
+  const sendWhatsAppNotification = async (data: typeof form) => {
+  const phone = process.env.NEXT_PUBLIC_NOTIFY_PHONE;
+  const apiKey = process.env.NEXT_PUBLIC_CALLMEBOT_KEY;
+  const message = encodeURIComponent(
+    `Nueva solicitud en HONESTOpe\nNombre: ${data.name}\nServicio: ${data.service}\nDistrito: ${data.district}\nTelefono: ${data.phone}${data.description ? `\nDetalle: ${data.description}` : ""}`
+  );
+  await fetch(`https://api.callmebot.com/whatsapp.php?phone=${phone}&text=${message}&apikey=${apiKey}`);
+};
+const sendPushNotification = async (data: typeof form) => {
+  await fetch("/api/notify", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+};
   const handleSubmit = async () => {
     if (!form.name || !form.phone || !form.service || !form.district) {
       alert("Por favor completa todos los campos obligatorios.");
@@ -37,6 +51,8 @@ export default function RequestForm() {
   status: "pending",
   source: "form",
 });
+    await sendWhatsAppNotification(form);
+    await sendPushNotification(form);
       setStatus("success");
     } catch (e) {
       setStatus("error");
