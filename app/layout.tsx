@@ -1,3 +1,6 @@
+import type { Metadata } from "next";
+import "./globals.css";
+
 export const metadata: Metadata = {
   title: "HONESTOpe - Servicios para el hogar en Piura",
   description: "Conectamos personas en Piura con tecnicos verificados de gasfiteria, electricidad, pintura, limpieza, carpinteria, mudanzas, jardineria y mas.",
@@ -19,3 +22,15 @@ export const metadata: Metadata = {
     ],
   },
 };
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="es">
+      <body>{children}</body>
+    </html>
+  );
+}
