@@ -14,10 +14,11 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "https://www.honestope.com/og-image.png",
+        url: "https://www.honestope.com/og-image.webp?v=3",
         width: 1200,
         height: 630,
         alt: "HONESTOpe - Servicios confiables en Piura",
+        type: "image/webp",
       }
     ],
   },
