@@ -63,8 +63,8 @@ export default function MercadoPage() {
         <div className={styles.heroInner}>
           <div className={styles.heroBadge}>🏪 Mercado Honesto</div>
           <h1 className={styles.heroTitle}>
-            Segunda vida,<br />
-            <span className={styles.heroAccent}>precio honesto</span>
+            Precios que,<br />
+            <span className={styles.heroAccent}>no tienen explicación</span>
           </h1>
           <p className={styles.heroSub}>
             Cada producto fue revisado por nuestros técnicos.

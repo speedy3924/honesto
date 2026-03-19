@@ -17,7 +17,7 @@ export default function MercadoHonestoBanner({ whatsappNumber }: MercadoHonestoB
               <span className={styles.titleAccent}>Honesto</span>
             </h2>
             <p className={styles.description}>
-              Muebles y electrodomésticos reacondicionados por nuestros técnicos.{" "}
+              Muebles y electrodomésticos a precios que no encontrarás en ninguna tienda.{" "}
               <strong>Ahorra hasta un 60%.</strong>
             </p>
             <a href="/mercado" className={styles.ctaButton}>
