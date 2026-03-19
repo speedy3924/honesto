@@ -40,6 +40,7 @@ export default function Hero() {
             <a href="#servicios">Servicios</a>
             <a href="#como-funciona">Cómo funciona</a>
             <a href="#confianza">¿Por qué elegirnos?</a>
+            <a href="/mercado">🛒 Mercado</a>
           </nav>
           <button
             className={styles.menuBtn}
@@ -55,6 +56,7 @@ export default function Hero() {
         <a href="#servicios" onClick={() => setMenuOpen(false)}>Servicios</a>
         <a href="#como-funciona" onClick={() => setMenuOpen(false)}>Cómo funciona</a>
         <a href="#confianza" onClick={() => setMenuOpen(false)}>¿Por qué elegirnos?</a>
+        <a href="/mercado" onClick={() => setMenuOpen(false)}>🛒 Mercado</a>
       </div>
 
       <section className={styles.hero}>
