@@ -1,6 +1,6 @@
 // app/page.tsx
 // Página principal de HONESTOpe (single-page MVP)
-
+import MercadoHonestoBanner from "@/components/MercadoHonestoBanner";
 import Hero from "@/components/Hero";
 import RequestForm from "@/components/RequestForm";
 import ServicesSection from "@/components/ServicesSection";
@@ -14,6 +14,7 @@ export default function Home() {
       <Hero />
       <RequestForm />
       <ServicesSection />
+      <MercadoHonestoBanner whatsappNumber={process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "51978797239"} />
       <Testimonials />
       <HowItWorks />
       <TrustSection />

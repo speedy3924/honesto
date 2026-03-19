@@ -1,0 +1,202 @@
+.page {
+  min-height: 100vh;
+  background: #f5f8ff;
+}
+
+/* Hero */
+.hero {
+  position: relative;
+  background: linear-gradient(135deg, #0d1b3e 0%, #1a3a6e 60%, #0d3320 100%);
+  padding: 4rem 1.5rem 3rem;
+  overflow: hidden;
+  text-align: center;
+}
+
+.heroInner {
+  position: relative;
+  z-index: 2;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.heroBadge {
+  display: inline-block;
+  background: rgba(42, 157, 92, 0.2);
+  border: 1px solid rgba(42, 157, 92, 0.4);
+  color: #4ecca3;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  padding: 6px 16px;
+  border-radius: 100px;
+  margin-bottom: 1.2rem;
+  text-transform: uppercase;
+}
+
+.heroTitle {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.05;
+  margin: 0 0 1rem;
+  letter-spacing: -0.03em;
+}
+
+.heroAccent {
+  color: #4ecca3;
+}
+
+.heroSub {
+  font-size: 1rem;
+  color: rgba(255,255,255,0.7);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.heroDecor {
+  position: absolute;
+  bottom: -80px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  border: 80px solid rgba(26, 111, 212, 0.06);
+  pointer-events: none;
+}
+
+/* Filters */
+.filters {
+  background: #fff;
+  border-bottom: 1px solid #e8eef6;
+  position: sticky;
+  top: 52px;
+  z-index: 10;
+}
+
+.filtersInner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0.9rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.filtersLabel {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #8898b0;
+  white-space: nowrap;
+}
+
+.filterButtons {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.filterBtn {
+  background: #f0f4fa;
+  border: 1.5px solid transparent;
+  color: #4a6080;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 100px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.filterBtn:hover {
+  border-color: #1a6fd4;
+  color: #1a6fd4;
+}
+
+.filterBtnActive {
+  background: #1a6fd4;
+  color: #fff;
+  border-color: #1a6fd4;
+}
+
+.filterCount {
+  margin-left: auto;
+  font-size: 0.78rem;
+  color: #8898b0;
+  white-space: nowrap;
+}
+
+/* Catalog grid */
+.catalog {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem 3rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+
+.empty {
+  text-align: center;
+  padding: 4rem;
+  color: #8898b0;
+  font-size: 1rem;
+}
+
+/* CTA section */
+.ctaSection {
+  padding: 0 1.5rem 4rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.ctaBox {
+  background: linear-gradient(135deg, #0d1b3e, #1a3a6e);
+  border-radius: 16px;
+  padding: 2.5rem;
+  text-align: center;
+}
+
+.ctaTitle {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 0.6rem;
+}
+
+.ctaText {
+  color: rgba(255,255,255,0.65);
+  font-size: 0.95rem;
+  margin: 0 0 1.5rem;
+}
+
+.ctaBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #25D366;
+  color: #fff;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 700;
+  padding: 12px 28px;
+  border-radius: 100px;
+  transition: all 0.2s ease;
+}
+
+.ctaBtn:hover {
+  background: #1db954;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(37, 211, 102, 0.35);
+}
+
+@media (max-width: 600px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.8rem;
+  }
+}
