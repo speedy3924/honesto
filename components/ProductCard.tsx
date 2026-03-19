@@ -1,13 +1,10 @@
 "use client";
 import styles from "../styles/productcard.module.css";
 
-export type ProductCondition = "Reparado" | "Caja Abierta" | "Exhibición";
-
 export interface Product {
   id: string;
   title: string;
   imageUrl: string;
-  condition: ProductCondition;
   honestDetail: string;
   originalPrice: number;
   honestPrice: number;
@@ -18,12 +15,6 @@ interface ProductCardProps {
   whatsappNumber: string;
 }
 
-const conditionConfig: Record<ProductCondition, { color: string; emoji: string }> = {
-  Reparado:        { color: "#2a9d5c", emoji: "🔧" },
-  "Caja Abierta":  { color: "#1a6fd4", emoji: "📦" },
-  Exhibición:      { color: "#c87a1a", emoji: "🏷️" },
-};
-
 function formatPrice(n: number) {
   return "S/ " + n.toLocaleString("es-PE");
 }
@@ -33,7 +24,6 @@ function savingsPercent(original: number, honest: number) {
 }
 
 export default function ProductCard({ product, whatsappNumber }: ProductCardProps) {
-  const { color, emoji } = conditionConfig[product.condition];
   const savings = savingsPercent(product.originalPrice, product.honestPrice);
 
   const waMessage = encodeURIComponent(
@@ -47,12 +37,6 @@ export default function ProductCard({ product, whatsappNumber }: ProductCardProp
 
       <div className={styles.imageWrap}>
         <img src={product.imageUrl} alt={product.title} className={styles.image} />
-        <span
-          className={styles.conditionTag}
-          style={{ "--cond-color": color } as React.CSSProperties}
-        >
-          {emoji} {product.condition}
-        </span>
       </div>
 
       <div className={styles.trustBadge}>
