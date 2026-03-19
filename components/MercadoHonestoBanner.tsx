@@ -44,12 +44,6 @@ export default function MercadoHonestoBanner({ whatsappNumber }: MercadoHonestoB
         </div>
         <div className={styles.decorCircle1} />
         <div className={styles.decorCircle2} />
-        <div className={styles.tagCloud}>
-          <span>Reparado</span>
-          <span>Caja Abierta</span>
-          <span>Exhibición</span>
-          <span>Todo a la vista</span>
-        </div>
       </div>
     </section>
   );
