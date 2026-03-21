@@ -43,12 +43,13 @@ export default function Hero() {
             <a href="/mercado">🛒 Mercado</a>
           </nav>
           <button
-            className={styles.menuBtn}
-            onClick={() => setMenuOpen(!menuOpen)}
-            aria-label="Menú"
-          >
-            {menuOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
+  className={styles.menuBtn}
+  onClick={() => setMenuOpen(!menuOpen)}
+  aria-label="Menú"
+>
+  {menuOpen ? <X size={24} /> : <Menu size={24} />}
+  {!menuOpen && <span className={styles.menuBadge}>NEW</span>}
+</button>
         </div>
       </header>
 

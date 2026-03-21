@@ -62,6 +62,7 @@
   cursor: pointer;
   padding: 4px;
   color: var(--color-text);
+  position: relative;
 }
 
 .mobileMenu {
@@ -281,4 +282,23 @@
     gap: 8px;
     margin-top: 20px;
   }
+}
+.menuBadge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: #e63946;
+  color: #fff;
+  font-size: 0.45rem;
+  font-weight: 800;
+  padding: 2px 4px;
+  border-radius: 100px;
+  letter-spacing: 0.05em;
+  animation: pulse 1.5s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.2); opacity: 0.8; }
 }
