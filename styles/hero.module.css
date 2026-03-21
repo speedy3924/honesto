@@ -302,3 +302,28 @@
   0%, 100% { transform: scale(1); opacity: 1; }
   50% { transform: scale(1.2); opacity: 0.8; }
 }
+.mercadoLink {
+  background: linear-gradient(135deg, #0d1b3e, #1a3a6e) !important;
+  color: #4ecca3 !important;
+  font-weight: 700 !important;
+  border-radius: 10px;
+  margin: 4px 0;
+  display: flex !important;
+  justify-content: space-between;
+  align-items: center;
+  animation: glow 2s ease-in-out infinite;
+}
+
+.mercadoArrow {
+  font-size: 0.75rem;
+  background: #e63946;
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 100px;
+  font-weight: 700;
+}
+
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 6px rgba(78, 204, 163, 0.3); }
+  50% { box-shadow: 0 0 14px rgba(78, 204, 163, 0.6); }
+}
