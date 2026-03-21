@@ -102,7 +102,7 @@
   line-height: 1.4;
   max-height: 60px;
   overflow-y: auto;
-  }
+}
 
 .priceBlock {
   margin-top: auto;
@@ -207,4 +207,4 @@
     font-size: 0.65rem;
     padding: 3px 8px;
   }
-}
+}}
