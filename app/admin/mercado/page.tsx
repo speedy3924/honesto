@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { collection, addDoc, getDocs, deleteDoc, doc, serverTimestamp, query, orderBy } from "firebase/firestore";
+import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc, serverTimestamp, query, orderBy } from "firebase/firestore";
 import { db } from "../../../lib/firebase";
 import styles from "../../../styles/adminmercado.module.css";
 
@@ -27,6 +27,7 @@ export default function AdminMercadoPage() {
   const [deleting, setDeleting] = useState<string | null>(null);
   const [success, setSuccess] = useState("");
 
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [title, setTitle] = useState("");
   const [honestDetail, setHonestDetail] = useState("");
   const [originalPrice, setOriginalPrice] = useState("");
@@ -35,6 +36,7 @@ export default function AdminMercadoPage() {
   const [imagePreview, setImagePreview] = useState("");
   const [uploading, setUploading] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+  const formRef = useRef<HTMLDivElement>(null);
 
   const savings = originalPrice && honestPrice
     ? Math.round(((Number(originalPrice) - Number(honestPrice)) / Number(originalPrice)) * 100)
@@ -75,27 +77,64 @@ export default function AdminMercadoPage() {
     return data.url;
   }
 
+  function handleEdit(p: Product) {
+    setEditingId(p.id);
+    setTitle(p.title);
+    setHonestDetail(p.honestDetail);
+    setOriginalPrice(String(p.originalPrice));
+    setHonestPrice(String(p.honestPrice));
+    setImagePreview(p.imageUrl);
+    setImageFile(null);
+    setTimeout(() => formRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
+  }
+
+  function handleCancelEdit() {
+    setEditingId(null);
+    setTitle(""); setHonestDetail(""); setOriginalPrice("");
+    setHonestPrice(""); setImageFile(null); setImagePreview("");
+    if (fileRef.current) fileRef.current.value = "";
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!title || !honestDetail || !originalPrice || !honestPrice || !imageFile) {
-      alert("Completa todos los campos y sube una foto.");
+    if (!title || !honestDetail || !originalPrice || !honestPrice) {
+      alert("Completa todos los campos.");
+      return;
+    }
+    if (!editingId && !imageFile) {
+      alert("Sube una foto del producto.");
       return;
     }
     setSaving(true);
     try {
-      const imageUrl = await uploadImage();
-      await addDoc(collection(db, "mercado_products"), {
-        title,
-        honestDetail,
-        originalPrice: Number(originalPrice),
-        honestPrice: Number(honestPrice),
-        imageUrl,
-        createdAt: serverTimestamp(),
-      });
+      let imageUrl = imagePreview;
+      if (imageFile) imageUrl = await uploadImage();
+
+      if (editingId) {
+        await updateDoc(doc(db, "mercado_products", editingId), {
+          title,
+          honestDetail,
+          originalPrice: Number(originalPrice),
+          honestPrice: Number(honestPrice),
+          imageUrl,
+        });
+        setSuccess("¡Producto actualizado!");
+      } else {
+        await addDoc(collection(db, "mercado_products"), {
+          title,
+          honestDetail,
+          originalPrice: Number(originalPrice),
+          honestPrice: Number(honestPrice),
+          imageUrl,
+          createdAt: serverTimestamp(),
+        });
+        setSuccess("¡Producto publicado!");
+      }
+
+      setEditingId(null);
       setTitle(""); setHonestDetail(""); setOriginalPrice("");
       setHonestPrice(""); setImageFile(null); setImagePreview("");
       if (fileRef.current) fileRef.current.value = "";
-      setSuccess("¡Producto publicado!");
       setTimeout(() => setSuccess(""), 3000);
       fetchProducts();
     } catch (err) {
@@ -155,16 +194,26 @@ export default function AdminMercadoPage() {
       </header>
 
       <div className={styles.layout}>
-        {/* Formulario */}
-        <aside className={styles.sidebar}>
+        <aside className={styles.sidebar} ref={formRef}>
           <div className={styles.card}>
-            <h2 className={styles.cardTitle}>Agregar producto</h2>
-            <form onSubmit={handleSubmit} className={styles.form}>
+            <div className={styles.cardTitleRow}>
+              <h2 className={styles.cardTitle}>
+                {editingId ? "✏️ Editando producto" : "Agregar producto"}
+              </h2>
+              {editingId && (
+                <button onClick={handleCancelEdit} className={styles.cancelBtn}>
+                  Cancelar
+                </button>
+              )}
+            </div>
 
-              {/* Foto */}
+            <form onSubmit={handleSubmit} className={styles.form}>
               <div className={styles.imageUpload} onClick={() => fileRef.current?.click()}>
                 {imagePreview ? (
-                  <img src={imagePreview} alt="preview" className={styles.imagePreview} />
+                  <div className={styles.imagePreviewWrap}>
+                    <img src={imagePreview} alt="preview" className={styles.imagePreview} />
+                    <div className={styles.imageOverlay}>📷 Cambiar foto</div>
+                  </div>
                 ) : (
                   <div className={styles.imagePlaceholder}>
                     <span className={styles.uploadIcon}>📷</span>
@@ -231,8 +280,8 @@ export default function AdminMercadoPage() {
                 </div>
               )}
 
-              <button type="submit" className={styles.submitBtn} disabled={saving || uploading}>
-                {uploading ? "Subiendo foto..." : saving ? "Publicando..." : "Publicar producto"}
+              <button type="submit" className={`${styles.submitBtn} ${editingId ? styles.submitBtnEdit : ""}`} disabled={saving || uploading}>
+                {uploading ? "Subiendo foto..." : saving ? "Guardando..." : editingId ? "Guardar cambios" : "Publicar producto"}
               </button>
 
               {success && <div className={styles.successMsg}>{success}</div>}
@@ -240,7 +289,6 @@ export default function AdminMercadoPage() {
           </div>
         </aside>
 
-        {/* Lista de productos */}
         <main className={styles.main}>
           <div className={styles.productsHeader}>
             <h2 className={styles.cardTitle}>Productos en venta</h2>
@@ -258,8 +306,9 @@ export default function AdminMercadoPage() {
             <div className={styles.productGrid}>
               {products.map(p => {
                 const s = Math.round(((p.originalPrice - p.honestPrice) / p.originalPrice) * 100);
+                const isEditing = editingId === p.id;
                 return (
-                  <div key={p.id} className={styles.productCard}>
+                  <div key={p.id} className={`${styles.productCard} ${isEditing ? styles.productCardEditing : ""}`}>
                     <div className={styles.productImageWrap}>
                       <img src={p.imageUrl} alt={p.title} className={styles.productImage} />
                       <span className={styles.productBadge}>-{s}%</span>
@@ -272,13 +321,22 @@ export default function AdminMercadoPage() {
                         <span className={styles.productHonest}>S/ {p.honestPrice.toLocaleString("es-PE")}</span>
                       </div>
                     </div>
-                    <button
-                      onClick={() => handleDelete(p.id)}
-                      className={styles.deleteBtn}
-                      disabled={deleting === p.id}
-                    >
-                      {deleting === p.id ? "..." : "✕ Vendido / Quitar"}
-                    </button>
+                    <div className={styles.productActions}>
+                      <button
+                        onClick={() => handleEdit(p)}
+                        className={styles.editBtn}
+                        disabled={!!deleting}
+                      >
+                        ✏️ Editar
+                      </button>
+                      <button
+                        onClick={() => handleDelete(p.id)}
+                        className={styles.deleteBtn}
+                        disabled={deleting === p.id}
+                      >
+                        {deleting === p.id ? "..." : "✕ Quitar"}
+                      </button>
+                    </div>
                   </div>
                 );
               })}
