@@ -100,11 +100,9 @@
   font-size: 0.75rem;
   color: #6b4c1a;
   line-height: 1.4;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
+  max-height: 60px;
+  overflow-y: auto;
+  }
 
 .priceBlock {
   margin-top: auto;
@@ -180,7 +178,8 @@
 
   .honestText {
     font-size: 0.7rem;
-    -webkit-line-clamp: 2;
+    .honestText {
+      max-height: 52px;
   }
 
   .honestLabel {
