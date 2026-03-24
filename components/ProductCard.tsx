@@ -1,10 +1,12 @@
 "use client";
+import { useState } from "react";
 import styles from "../styles/productcard.module.css";
 
 export interface Product {
   id: string;
   title: string;
   imageUrl: string;
+  images?: string[];
   honestDetail: string;
   originalPrice: number;
   honestPrice: number;
@@ -25,6 +27,8 @@ function savingsPercent(original: number, honest: number) {
 
 export default function ProductCard({ product, whatsappNumber }: ProductCardProps) {
   const savings = savingsPercent(product.originalPrice, product.honestPrice);
+  const photos = product.images?.length ? product.images : [product.imageUrl];
+  const [current, setCurrent] = useState(0);
 
   const waMessage = encodeURIComponent(
     `¡Hola! Me interesa comprar el ${product.title} que está a ${formatPrice(product.honestPrice)}. ¿Aún está disponible?`
@@ -36,7 +40,26 @@ export default function ProductCard({ product, whatsappNumber }: ProductCardProp
       <div className={styles.savingsBadge}>-{savings}%</div>
 
       <div className={styles.imageWrap}>
-        <img src={product.imageUrl} alt={product.title} className={styles.image} />
+        <img src={photos[current]} alt={product.title} className={styles.image} />
+
+        {photos.length > 1 && (
+          <>
+            <button className={`${styles.navBtn} ${styles.navBtnPrev}`}
+              onClick={() => setCurrent(c => (c - 1 + photos.length) % photos.length)}>
+              ‹
+            </button>
+            <button className={`${styles.navBtn} ${styles.navBtnNext}`}
+              onClick={() => setCurrent(c => (c + 1) % photos.length)}>
+              ›
+            </button>
+            <div className={styles.dots}>
+              {photos.map((_, i) => (
+                <button key={i} onClick={() => setCurrent(i)}
+                  className={`${styles.dot} ${i === current ? styles.dotActive : ""}`} />
+              ))}
+            </div>
+          </>
+        )}
       </div>
 
       <div className={styles.trustBadge}>

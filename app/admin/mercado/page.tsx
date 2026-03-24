@@ -8,6 +8,7 @@ interface Product {
   id: string;
   title: string;
   imageUrl: string;
+  images?: string[];
   honestDetail: string;
   originalPrice: number;
   honestPrice: number;
@@ -15,6 +16,7 @@ interface Product {
 }
 
 const PASS = process.env.NEXT_PUBLIC_ADMIN_PASSWORD ?? "honesto2026";
+const MAX_PHOTOS = 3;
 
 export default function AdminMercadoPage() {
   const [authed, setAuthed] = useState(false);
@@ -32,10 +34,12 @@ export default function AdminMercadoPage() {
   const [honestDetail, setHonestDetail] = useState("");
   const [originalPrice, setOriginalPrice] = useState("");
   const [honestPrice, setHonestPrice] = useState("");
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState("");
+
+  // Múltiples fotos
+  const [imageFiles, setImageFiles] = useState<(File | null)[]>([null, null, null]);
+  const [imagePreviews, setImagePreviews] = useState<string[]>(["", "", ""]);
   const [uploading, setUploading] = useState(false);
-  const fileRef = useRef<HTMLInputElement>(null);
+  const fileRefs = [useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null)];
   const formRef = useRef<HTMLDivElement>(null);
 
   const savings = originalPrice && honestPrice
@@ -58,23 +62,49 @@ export default function AdminMercadoPage() {
     setLoading(false);
   }
 
-  function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
+  function handleImageChange(index: number, e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
-    setImageFile(file);
-    setImagePreview(URL.createObjectURL(file));
+    const newFiles = [...imageFiles];
+    const newPreviews = [...imagePreviews];
+    newFiles[index] = file;
+    newPreviews[index] = URL.createObjectURL(file);
+    setImageFiles(newFiles);
+    setImagePreviews(newPreviews);
   }
 
-  async function uploadImage(): Promise<string> {
-    if (!imageFile) throw new Error("No image");
-    setUploading(true);
+  function removeImage(index: number) {
+    const newFiles = [...imageFiles];
+    const newPreviews = [...imagePreviews];
+    newFiles[index] = null;
+    newPreviews[index] = "";
+    setImageFiles(newFiles);
+    setImagePreviews(newPreviews);
+    if (fileRefs[index].current) fileRefs[index].current!.value = "";
+  }
+
+  async function uploadSingleImage(file: File): Promise<string> {
     const formData = new FormData();
-    formData.append("file", imageFile);
+    formData.append("file", file);
     const res = await fetch("/api/upload", { method: "POST", body: formData });
     const data = await res.json();
-    setUploading(false);
     if (!data.url) throw new Error("Upload failed");
     return data.url;
+  }
+
+  async function uploadAllImages(existingUrls: string[]): Promise<string[]> {
+    setUploading(true);
+    const urls: string[] = [];
+    for (let i = 0; i < MAX_PHOTOS; i++) {
+      if (imageFiles[i]) {
+        const url = await uploadSingleImage(imageFiles[i]!);
+        urls.push(url);
+      } else if (existingUrls[i]) {
+        urls.push(existingUrls[i]);
+      }
+    }
+    setUploading(false);
+    return urls;
   }
 
   function handleEdit(p: Product) {
@@ -83,16 +113,26 @@ export default function AdminMercadoPage() {
     setHonestDetail(p.honestDetail);
     setOriginalPrice(String(p.originalPrice));
     setHonestPrice(String(p.honestPrice));
-    setImagePreview(p.imageUrl);
-    setImageFile(null);
+    const existing = p.images ?? [p.imageUrl, "", ""];
+    setImagePreviews([existing[0] ?? "", existing[1] ?? "", existing[2] ?? ""]);
+    setImageFiles([null, null, null]);
     setTimeout(() => formRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
   }
 
   function handleCancelEdit() {
     setEditingId(null);
-    setTitle(""); setHonestDetail(""); setOriginalPrice("");
-    setHonestPrice(""); setImageFile(null); setImagePreview("");
-    if (fileRef.current) fileRef.current.value = "";
+    setTitle(""); setHonestDetail(""); setOriginalPrice(""); setHonestPrice("");
+    setImageFiles([null, null, null]);
+    setImagePreviews(["", "", ""]);
+    fileRefs.forEach(r => { if (r.current) r.current.value = ""; });
+  }
+
+  function resetForm() {
+    setEditingId(null);
+    setTitle(""); setHonestDetail(""); setOriginalPrice(""); setHonestPrice("");
+    setImageFiles([null, null, null]);
+    setImagePreviews(["", "", ""]);
+    fileRefs.forEach(r => { if (r.current) r.current.value = ""; });
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -101,40 +141,37 @@ export default function AdminMercadoPage() {
       alert("Completa todos los campos.");
       return;
     }
-    if (!editingId && !imageFile) {
-      alert("Sube una foto del producto.");
+    const existingPreviews = editingId ? imagePreviews : ["", "", ""];
+    const hasAnyImage = imageFiles.some(f => f !== null) || existingPreviews.some(p => p !== "");
+    if (!hasAnyImage) {
+      alert("Sube al menos una foto del producto.");
       return;
     }
     setSaving(true);
     try {
-      let imageUrl = imagePreview;
-      if (imageFile) imageUrl = await uploadImage();
+      const urls = await uploadAllImages(existingPreviews);
+      const imageUrl = urls[0] ?? "";
+      const images = urls;
 
       if (editingId) {
         await updateDoc(doc(db, "mercado_products", editingId), {
-          title,
-          honestDetail,
+          title, honestDetail,
           originalPrice: Number(originalPrice),
           honestPrice: Number(honestPrice),
-          imageUrl,
+          imageUrl, images,
         });
         setSuccess("¡Producto actualizado!");
       } else {
         await addDoc(collection(db, "mercado_products"), {
-          title,
-          honestDetail,
+          title, honestDetail,
           originalPrice: Number(originalPrice),
           honestPrice: Number(honestPrice),
-          imageUrl,
+          imageUrl, images,
           createdAt: serverTimestamp(),
         });
         setSuccess("¡Producto publicado!");
       }
-
-      setEditingId(null);
-      setTitle(""); setHonestDetail(""); setOriginalPrice("");
-      setHonestPrice(""); setImageFile(null); setImagePreview("");
-      if (fileRef.current) fileRef.current.value = "";
+      resetForm();
       setTimeout(() => setSuccess(""), 3000);
       fetchProducts();
     } catch (err) {
@@ -168,10 +205,7 @@ export default function AdminMercadoPage() {
             className={`${styles.loginInput} ${passError ? styles.loginInputError : ""}`}
           />
           {passError && <p className={styles.loginError}>Contraseña incorrecta</p>}
-          <button
-            onClick={() => passInput === PASS ? setAuthed(true) : setPassError(true)}
-            className={styles.loginBtn}
-          >
+          <button onClick={() => passInput === PASS ? setAuthed(true) : setPassError(true)} className={styles.loginBtn}>
             Entrar
           </button>
         </div>
@@ -187,9 +221,7 @@ export default function AdminMercadoPage() {
             <span className={styles.headerTitle}>🏪 Mercado Honesto</span>
             <span className={styles.headerSub}>Panel de productos</span>
           </div>
-          <a href="/mercado" target="_blank" className={styles.headerLink}>
-            Ver tienda →
-          </a>
+          <a href="/mercado" target="_blank" className={styles.headerLink}>Ver tienda →</a>
         </div>
       </header>
 
@@ -201,76 +233,66 @@ export default function AdminMercadoPage() {
                 {editingId ? "✏️ Editando producto" : "Agregar producto"}
               </h2>
               {editingId && (
-                <button onClick={handleCancelEdit} className={styles.cancelBtn}>
-                  Cancelar
-                </button>
+                <button onClick={handleCancelEdit} className={styles.cancelBtn}>Cancelar</button>
               )}
             </div>
 
             <form onSubmit={handleSubmit} className={styles.form}>
-              <div className={styles.imageUpload} onClick={() => fileRef.current?.click()}>
-                {imagePreview ? (
-                  <div className={styles.imagePreviewWrap}>
-                    <img src={imagePreview} alt="preview" className={styles.imagePreview} />
-                    <div className={styles.imageOverlay}>📷 Cambiar foto</div>
+
+              {/* Fotos múltiples */}
+              <div className={styles.photosLabel}>
+                <span className={styles.label}>Fotos (hasta 3)</span>
+                <span className={styles.photosHint}>La primera es la principal</span>
+              </div>
+              <div className={styles.photosGrid}>
+                {[0, 1, 2].map(i => (
+                  <div key={i} className={`${styles.photoSlot} ${i === 0 ? styles.photoSlotMain : ""}`}>
+                    {imagePreviews[i] ? (
+                      <div className={styles.photoPreviewWrap}>
+                        <img src={imagePreviews[i]} alt={`foto ${i + 1}`} className={styles.photoPreview} />
+                        <button type="button" onClick={() => removeImage(i)} className={styles.photoRemove}>✕</button>
+                        {i === 0 && <span className={styles.photoMainBadge}>Principal</span>}
+                      </div>
+                    ) : (
+                      <div className={styles.photoEmpty} onClick={() => fileRefs[i].current?.click()}>
+                        <span>{i === 0 ? "📷" : "+"}</span>
+                        <span>{i === 0 ? "Principal" : `Foto ${i + 1}`}</span>
+                      </div>
+                    )}
+                    <input
+                      ref={fileRefs[i]}
+                      type="file"
+                      accept="image/*"
+                      onChange={e => handleImageChange(i, e)}
+                      className={styles.fileInput}
+                    />
                   </div>
-                ) : (
-                  <div className={styles.imagePlaceholder}>
-                    <span className={styles.uploadIcon}>📷</span>
-                    <span>Toca para subir foto</span>
-                  </div>
-                )}
-                <input
-                  ref={fileRef}
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  className={styles.fileInput}
-                />
+                ))}
               </div>
 
               <div className={styles.field}>
                 <label className={styles.label}>Nombre del producto</label>
-                <input
-                  type="text"
-                  value={title}
-                  onChange={e => setTitle(e.target.value)}
-                  placeholder="Ej: Laptop HP 15 Core i5"
-                  className={styles.input}
-                />
+                <input type="text" value={title} onChange={e => setTitle(e.target.value)}
+                  placeholder="Ej: Zapatera Blanca 6 Niveles" className={styles.input} />
               </div>
 
               <div className={styles.field}>
                 <label className={styles.label}>Detalle honesto</label>
-                <textarea
-                  value={honestDetail}
-                  onChange={e => setHonestDetail(e.target.value)}
+                <textarea value={honestDetail} onChange={e => setHonestDetail(e.target.value)}
                   placeholder="Funciona perfecto. Detalle mínimo: ..."
-                  className={styles.textarea}
-                  rows={3}
-                />
+                  className={styles.textarea} rows={3} />
               </div>
 
               <div className={styles.priceRow}>
                 <div className={styles.field}>
                   <label className={styles.label}>Precio original (S/)</label>
-                  <input
-                    type="number"
-                    value={originalPrice}
-                    onChange={e => setOriginalPrice(e.target.value)}
-                    placeholder="850"
-                    className={styles.input}
-                  />
+                  <input type="number" value={originalPrice} onChange={e => setOriginalPrice(e.target.value)}
+                    placeholder="179" className={styles.input} />
                 </div>
                 <div className={styles.field}>
                   <label className={styles.label}>Precio Honesto (S/)</label>
-                  <input
-                    type="number"
-                    value={honestPrice}
-                    onChange={e => setHonestPrice(e.target.value)}
-                    placeholder="340"
-                    className={styles.input}
-                  />
+                  <input type="number" value={honestPrice} onChange={e => setHonestPrice(e.target.value)}
+                    placeholder="89" className={styles.input} />
                 </div>
               </div>
 
@@ -280,8 +302,9 @@ export default function AdminMercadoPage() {
                 </div>
               )}
 
-              <button type="submit" className={`${styles.submitBtn} ${editingId ? styles.submitBtnEdit : ""}`} disabled={saving || uploading}>
-                {uploading ? "Subiendo foto..." : saving ? "Guardando..." : editingId ? "Guardar cambios" : "Publicar producto"}
+              <button type="submit" className={`${styles.submitBtn} ${editingId ? styles.submitBtnEdit : ""}`}
+                disabled={saving || uploading}>
+                {uploading ? "Subiendo fotos..." : saving ? "Guardando..." : editingId ? "Guardar cambios" : "Publicar producto"}
               </button>
 
               {success && <div className={styles.successMsg}>{success}</div>}
@@ -312,6 +335,9 @@ export default function AdminMercadoPage() {
                     <div className={styles.productImageWrap}>
                       <img src={p.imageUrl} alt={p.title} className={styles.productImage} />
                       <span className={styles.productBadge}>-{s}%</span>
+                      {p.images && p.images.length > 1 && (
+                        <span className={styles.photoCount}>📷 {p.images.length}</span>
+                      )}
                     </div>
                     <div className={styles.productInfo}>
                       <h3 className={styles.productTitle}>{p.title}</h3>
@@ -322,18 +348,10 @@ export default function AdminMercadoPage() {
                       </div>
                     </div>
                     <div className={styles.productActions}>
-                      <button
-                        onClick={() => handleEdit(p)}
-                        className={styles.editBtn}
-                        disabled={!!deleting}
-                      >
+                      <button onClick={() => handleEdit(p)} className={styles.editBtn} disabled={!!deleting}>
                         ✏️ Editar
                       </button>
-                      <button
-                        onClick={() => handleDelete(p.id)}
-                        className={styles.deleteBtn}
-                        disabled={deleting === p.id}
-                      >
+                      <button onClick={() => handleDelete(p.id)} className={styles.deleteBtn} disabled={deleting === p.id}>
                         {deleting === p.id ? "..." : "✕ Quitar"}
                       </button>
                     </div>

@@ -74,12 +74,12 @@
 
 .headerTitle { font-size: 1rem; font-weight: 800; color: #fff; margin-right: 10px; }
 .headerSub { font-size: 0.75rem; color: rgba(255,255,255,0.45); }
-.headerLink { font-size: 0.8rem; font-weight: 600; color: #4ecca3; text-decoration: none; transition: opacity 0.2s; }
+.headerLink { font-size: 0.8rem; font-weight: 600; color: #4ecca3; text-decoration: none; }
 .headerLink:hover { opacity: 0.75; }
 
 .layout {
   display: grid;
-  grid-template-columns: 360px 1fr;
+  grid-template-columns: 380px 1fr;
   gap: 1.5rem;
   max-width: 1300px;
   margin: 0 auto;
@@ -117,51 +117,100 @@
 
 .form { display: flex; flex-direction: column; gap: 0.9rem; }
 
-.imageUpload {
-  width: 100%;
-  aspect-ratio: 4/3;
-  border: 2px dashed #c8d8f0;
-  border-radius: 12px;
+/* Fotos múltiples */
+.photosLabel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.photosHint {
+  font-size: 0.65rem;
+  color: #8898b0;
+  font-style: italic;
+}
+
+.photosGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+}
+
+.photoSlot {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 10px;
   overflow: hidden;
+  border: 2px dashed #c8d8f0;
+  background: #f5f8ff;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.photoSlot:hover { border-color: #1a6fd4; }
+
+.photoSlotMain {
+  border-color: #1a6fd4;
+}
+
+.photoPreviewWrap {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.photoPreview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photoRemove {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: rgba(230, 57, 70, 0.9);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  font-size: 0.6rem;
+  font-weight: 800;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f5f8ff;
-  transition: border-color 0.2s;
-  position: relative;
+  z-index: 2;
 }
-.imageUpload:hover { border-color: #1a6fd4; }
 
-.imagePreviewWrap { position: relative; width: 100%; height: 100%; }
-
-.imagePreview { width: 100%; height: 100%; object-fit: cover; }
-
-.imageOverlay {
+.photoMainBadge {
   position: absolute;
-  inset: 0;
-  background: rgba(0,0,0,0.45);
+  bottom: 4px;
+  left: 4px;
+  background: #1a6fd4;
   color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.85rem;
-  font-weight: 600;
-  opacity: 0;
-  transition: opacity 0.2s;
+  font-size: 0.55rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 100px;
 }
-.imageUpload:hover .imageOverlay { opacity: 1; }
 
-.imagePlaceholder {
+.photoEmpty {
+  width: 100%;
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
+  gap: 4px;
   color: #8898b0;
-  font-size: 0.82rem;
+  font-size: 0.65rem;
   font-weight: 500;
 }
-.uploadIcon { font-size: 2rem; }
+
+.photoEmpty span:first-child { font-size: 1.4rem; }
+
 .fileInput { display: none; }
 
 .field { display: flex; flex-direction: column; gap: 5px; }
@@ -297,6 +346,18 @@
   font-size: 0.65rem;
   font-weight: 800;
   padding: 3px 8px;
+  border-radius: 100px;
+}
+
+.photoCount {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background: rgba(0,0,0,0.55);
+  color: #fff;
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 2px 7px;
   border-radius: 100px;
 }
 

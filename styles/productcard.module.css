@@ -48,6 +48,58 @@
   transform: scale(1.04);
 }
 
+/* Navegación carrusel */
+.navBtn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(0,0,0,0.45);
+  color: #fff;
+  border: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+  padding: 0;
+}
+.navBtn:hover { background: rgba(0,0,0,0.7); }
+.navBtnPrev { left: 8px; }
+.navBtnNext { right: 8px; }
+
+.dots {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 5px;
+  z-index: 4;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.5);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.dotActive {
+  background: #fff;
+  transform: scale(1.3);
+}
+
+/* Trust badge */
 .trustBadge {
   display: flex;
   align-items: center;
@@ -178,8 +230,7 @@
 
   .honestText {
     font-size: 0.7rem;
-    .honestText {
-      max-height: 52px;
+    max-height: 52px;
   }
 
   .honestLabel {
@@ -207,4 +258,10 @@
     font-size: 0.65rem;
     padding: 3px 8px;
   }
-}}
+
+  .navBtn {
+    width: 24px;
+    height: 24px;
+    font-size: 1rem;
+  }
+}
