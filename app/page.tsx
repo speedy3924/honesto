@@ -7,6 +7,7 @@ import ServicesSection from "@/components/ServicesSection";
 import Testimonials from "@/components/Testimonials";
 import HowItWorks from "@/components/HowItWorks";
 import TrustSection from "@/components/TrustSection";
+import MercadoToast from "@/components/MercadoToast";
 
 export default function Home() {
   return (
@@ -18,6 +19,7 @@ export default function Home() {
       <Testimonials />
       <HowItWorks />
       <TrustSection />
+      <MercadoToast />
     </main>
   );
 }
