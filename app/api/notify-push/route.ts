@@ -1,21 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
-import { GoogleAuth } from "google-auth-library";
+import { initializeApp, getApps, cert } from "firebase-admin/app";
+import { getMessaging } from "firebase-admin/messaging";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "@/lib/firebase";
 
-const PROJECT_ID = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
-
-async function getAccessToken(): Promise<string> {
-  const auth = new GoogleAuth({
-    credentials: {
-      client_email: process.env.FIREBASE_CLIENT_EMAIL,
-      private_key: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
-    },
-    scopes: ["https://www.googleapis.com/auth/firebase.messaging"],
+// Inicializar firebase-admin solo una vez
+if (!getApps().length) {
+  initializeApp({
+    credential: cert({
+      projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
+    }),
   });
-  const client = await auth.getClient();
-  const token = await client.getAccessToken();
-  return token.token as string;
 }
 
 export async function POST(req: NextRequest) {
@@ -25,49 +22,32 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "title y body requeridos" }, { status: 400 });
     }
 
-    // Obtener todos los tokens guardados
     const snap = await getDocs(collection(db, "push_tokens"));
-    const tokens = snap.docs.map(d => d.data().token as string);
+    const tokens = snap.docs.map(d => d.data().token as string).filter(Boolean);
 
     if (tokens.length === 0) {
-      return NextResponse.json({ sent: 0, message: "No hay suscriptores aún" });
+      return NextResponse.json({ sent: 0, failed: 0, total: 0, message: "No hay suscriptores" });
     }
 
-    const accessToken = await getAccessToken();
-    const endpoint = `https://fcm.googleapis.com/v1/projects/${PROJECT_ID}/messages:send`;
-
+    const messaging = getMessaging();
     let sent = 0;
     let failed = 0;
 
     for (const token of tokens) {
       try {
-        const res = await fetch(endpoint, {
-          method: "POST",
-          headers: {
-            "Authorization": `Bearer ${accessToken}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            message: {
-              token,
-              notification: {
-                title,
-                body,
-              },
-              webpush: {
-                notification: {
-                  icon: "https://www.honestope.com/logo.png",
-                  click_action: url || "https://www.honestope.com/mercado",
-                },
-                fcm_options: {
-                  link: url || "https://www.honestope.com/mercado",
-                },
-              },
+        await messaging.send({
+          token,
+          notification: { title, body },
+          webpush: {
+            notification: {
+              icon: "https://www.honestope.com/logo.png",
             },
-          }),
+            fcmOptions: {
+              link: url || "https://www.honestope.com/mercado",
+            },
+          },
         });
-        if (res.ok) sent++;
-        else failed++;
+        sent++;
       } catch {
         failed++;
       }
@@ -76,6 +56,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ sent, failed, total: tokens.length });
   } catch (err) {
     console.error(err);
-    return NextResponse.json({ error: "Error enviando notificaciones" }, { status: 500 });
+    return NextResponse.json({ error: String(err) }, { status: 500 });
   }
 }
