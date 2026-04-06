@@ -31,7 +31,17 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es">
-      <body>{children}</body>
+      <body>
+        {children}
+        <script dangerouslySetInnerHTML={{
+          __html: `
+            if ('serviceWorker' in navigator) {
+              navigator.serviceWorker.register('/firebase-messaging-sw.js')
+                .catch(function(err) { console.error('SW error:', err); });
+            }
+          `
+        }} />
+      </body>
     </html>
   );
 }
