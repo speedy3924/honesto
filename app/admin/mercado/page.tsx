@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc, serverTimestamp, query, orderBy } from "firebase/firestore";
 import { db } from "../../../lib/firebase";
 import styles from "../../../styles/adminmercado.module.css";
+import PushPanel from "@/components/PushPanel";
 
 interface Product {
   id: string;
@@ -304,6 +305,7 @@ export default function AdminMercadoPage() {
               {success && <div className={styles.successMsg}>{success}</div>}
             </form>
           </div>
+           <PushPanel />
         </aside>
 
         <main className={styles.main}>

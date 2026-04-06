@@ -8,6 +8,7 @@ import Testimonials from "@/components/Testimonials";
 import HowItWorks from "@/components/HowItWorks";
 import TrustSection from "@/components/TrustSection";
 import MercadoToast from "@/components/MercadoToast";
+import PushNotificationPrompt from "@/components/PushNotificationPrompt";
 
 export default function Home() {
   return (
@@ -20,6 +21,7 @@ export default function Home() {
       <HowItWorks />
       <TrustSection />
       <MercadoToast />
+      <PushNotificationPrompt />
     </main>
   );
 }
