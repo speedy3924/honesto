@@ -12,6 +12,7 @@ interface Product {
   honestDetail: string;
   originalPrice: number;
   honestPrice: number;
+  soldOut?: boolean;
   createdAt?: any;
 }
 
@@ -27,6 +28,7 @@ export default function AdminMercadoPage() {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);
+  const [togglingId, setTogglingId] = useState<string | null>(null);
   const [success, setSuccess] = useState("");
 
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -35,7 +37,6 @@ export default function AdminMercadoPage() {
   const [originalPrice, setOriginalPrice] = useState("");
   const [honestPrice, setHonestPrice] = useState("");
 
-  // Múltiples fotos
   const [imageFiles, setImageFiles] = useState<(File | null)[]>([null, null, null]);
   const [imagePreviews, setImagePreviews] = useState<string[]>(["", "", ""]);
   const [uploading, setUploading] = useState(false);
@@ -46,9 +47,7 @@ export default function AdminMercadoPage() {
     ? Math.round(((Number(originalPrice) - Number(honestPrice)) / Number(originalPrice)) * 100)
     : 0;
 
-  useEffect(() => {
-    if (authed) fetchProducts();
-  }, [authed]);
+  useEffect(() => { if (authed) fetchProducts(); }, [authed]);
 
   async function fetchProducts() {
     setLoading(true);
@@ -56,9 +55,7 @@ export default function AdminMercadoPage() {
       const q = query(collection(db, "mercado_products"), orderBy("createdAt", "desc"));
       const snap = await getDocs(q);
       setProducts(snap.docs.map(d => ({ id: d.id, ...d.data() } as Product)));
-    } catch (e) {
-      console.error(e);
-    }
+    } catch (e) { console.error(e); }
     setLoading(false);
   }
 
@@ -128,11 +125,14 @@ export default function AdminMercadoPage() {
   }
 
   function resetForm() {
-    setEditingId(null);
-    setTitle(""); setHonestDetail(""); setOriginalPrice(""); setHonestPrice("");
-    setImageFiles([null, null, null]);
-    setImagePreviews(["", "", ""]);
-    fileRefs.forEach(r => { if (r.current) r.current.value = ""; });
+    handleCancelEdit();
+  }
+
+  async function toggleSoldOut(p: Product) {
+    setTogglingId(p.id);
+    await updateDoc(doc(db, "mercado_products", p.id), { soldOut: !p.soldOut });
+    setProducts(prev => prev.map(x => x.id === p.id ? { ...x, soldOut: !x.soldOut } : x));
+    setTogglingId(null);
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -167,6 +167,7 @@ export default function AdminMercadoPage() {
           originalPrice: Number(originalPrice),
           honestPrice: Number(honestPrice),
           imageUrl, images,
+          soldOut: false,
           createdAt: serverTimestamp(),
         });
         setSuccess("¡Producto publicado!");
@@ -238,8 +239,6 @@ export default function AdminMercadoPage() {
             </div>
 
             <form onSubmit={handleSubmit} className={styles.form}>
-
-              {/* Fotos múltiples */}
               <div className={styles.photosLabel}>
                 <span className={styles.label}>Fotos (hasta 3)</span>
                 <span className={styles.photosHint}>La primera es la principal</span>
@@ -259,13 +258,8 @@ export default function AdminMercadoPage() {
                         <span>{i === 0 ? "Principal" : `Foto ${i + 1}`}</span>
                       </div>
                     )}
-                    <input
-                      ref={fileRefs[i]}
-                      type="file"
-                      accept="image/*"
-                      onChange={e => handleImageChange(i, e)}
-                      className={styles.fileInput}
-                    />
+                    <input ref={fileRefs[i]} type="file" accept="image/*"
+                      onChange={e => handleImageChange(i, e)} className={styles.fileInput} />
                   </div>
                 ))}
               </div>
@@ -315,7 +309,9 @@ export default function AdminMercadoPage() {
         <main className={styles.main}>
           <div className={styles.productsHeader}>
             <h2 className={styles.cardTitle}>Productos en venta</h2>
-            <span className={styles.productCount}>{products.length} activos</span>
+            <span className={styles.productCount}>
+              {products.filter(p => !p.soldOut).length} disponibles · {products.filter(p => p.soldOut).length} agotados
+            </span>
           </div>
 
           {loading ? (
@@ -331,10 +327,13 @@ export default function AdminMercadoPage() {
                 const s = Math.round(((p.originalPrice - p.honestPrice) / p.originalPrice) * 100);
                 const isEditing = editingId === p.id;
                 return (
-                  <div key={p.id} className={`${styles.productCard} ${isEditing ? styles.productCardEditing : ""}`}>
+                  <div key={p.id} className={`${styles.productCard} ${isEditing ? styles.productCardEditing : ""} ${p.soldOut ? styles.productCardSoldOut : ""}`}>
                     <div className={styles.productImageWrap}>
                       <img src={p.imageUrl} alt={p.title} className={styles.productImage} />
-                      <span className={styles.productBadge}>-{s}%</span>
+                      {p.soldOut
+                        ? <span className={styles.soldOutBadge}>AGOTADO</span>
+                        : <span className={styles.productBadge}>-{s}%</span>
+                      }
                       {p.images && p.images.length > 1 && (
                         <span className={styles.photoCount}>📷 {p.images.length}</span>
                       )}
@@ -350,6 +349,13 @@ export default function AdminMercadoPage() {
                     <div className={styles.productActions}>
                       <button onClick={() => handleEdit(p)} className={styles.editBtn} disabled={!!deleting}>
                         ✏️ Editar
+                      </button>
+                      <button
+                        onClick={() => toggleSoldOut(p)}
+                        className={p.soldOut ? styles.restoreBtn : styles.soldOutBtn}
+                        disabled={togglingId === p.id}
+                      >
+                        {togglingId === p.id ? "..." : p.soldOut ? "✓ Disponible" : "Agotado"}
                       </button>
                       <button onClick={() => handleDelete(p.id)} className={styles.deleteBtn} disabled={deleting === p.id}>
                         {deleting === p.id ? "..." : "✕ Quitar"}

@@ -10,6 +10,7 @@ export interface Product {
   honestDetail: string;
   originalPrice: number;
   honestPrice: number;
+  soldOut?: boolean;
 }
 
 interface ProductCardProps {
@@ -30,10 +31,42 @@ export default function ProductCard({ product, whatsappNumber }: ProductCardProp
   const photos = product.images?.length ? product.images : [product.imageUrl];
   const [current, setCurrent] = useState(0);
 
-  const waMessage = encodeURIComponent(
+  const waAvailable = encodeURIComponent(
     `¡Hola! Me interesa comprar el ${product.title} que está a ${formatPrice(product.honestPrice)}. ¿Aún está disponible?`
   );
-  const waUrl = `https://wa.me/${whatsappNumber}?text=${waMessage}`;
+  const waNotify = encodeURIComponent(
+    `¡Hola! Vi que el ${product.title} está agotado en Mercado Honesto. ¿Pueden avisarme cuando vuelva a estar disponible?`
+  );
+  const waUrl = `https://wa.me/${whatsappNumber}?text=${product.soldOut ? waNotify : waAvailable}`;
+
+  if (product.soldOut) {
+    return (
+      <article className={`${styles.card} ${styles.cardSoldOut}`}>
+        <div className={styles.imageWrap}>
+          <img src={photos[0]} alt={product.title} className={`${styles.image} ${styles.imageSoldOut}`} />
+          <div className={styles.soldOutOverlay}>
+            <span className={styles.soldOutBadge}>AGOTADO</span>
+          </div>
+        </div>
+
+        <div className={styles.trustBadge}>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2L3 6v6c0 5.25 3.75 10.14 9 11.25C17.25 22.14 21 17.25 21 12V6l-9-4z" fill="#2a9d5c"/>
+            <path d="M9 12l2 2 4-4" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          Revisado por HONESTOpe
+        </div>
+
+        <div className={styles.body}>
+          <h3 className={styles.title}>{product.title}</h3>
+          <p className={styles.soldOutMsg}>Este producto ya encontró dueño. ¿Quieres uno similar?</p>
+          <a href={waUrl} target="_blank" rel="noopener noreferrer" className={styles.notifyButton}>
+            Avisar cuando llegue
+          </a>
+        </div>
+      </article>
+    );
+  }
 
   return (
     <article className={styles.card}>
@@ -41,17 +74,12 @@ export default function ProductCard({ product, whatsappNumber }: ProductCardProp
 
       <div className={styles.imageWrap}>
         <img src={photos[current]} alt={product.title} className={styles.image} />
-
         {photos.length > 1 && (
           <>
             <button className={`${styles.navBtn} ${styles.navBtnPrev}`}
-              onClick={() => setCurrent(c => (c - 1 + photos.length) % photos.length)}>
-              ‹
-            </button>
+              onClick={() => setCurrent(c => (c - 1 + photos.length) % photos.length)}>‹</button>
             <button className={`${styles.navBtn} ${styles.navBtnNext}`}
-              onClick={() => setCurrent(c => (c + 1) % photos.length)}>
-              ›
-            </button>
+              onClick={() => setCurrent(c => (c + 1) % photos.length)}>›</button>
             <div className={styles.dots}>
               {photos.map((_, i) => (
                 <button key={i} onClick={() => setCurrent(i)}
