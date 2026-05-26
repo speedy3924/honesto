@@ -15,7 +15,14 @@ export default function MercadoPage() {
       try {
         const q = query(collection(db, "mercado_products"), orderBy("createdAt", "desc"));
         const snap = await getDocs(q);
-        setProducts(snap.docs.map(d => ({ id: d.id, ...d.data() } as Product)));
+        setProducts(
+  snap.docs
+    .map(d => ({ id: d.id, ...d.data() } as Product))
+    .sort((a, b) => {
+      if (a.soldOut === b.soldOut) return 0;
+      return a.soldOut ? 1 : -1;
+    })
+);
       } catch (e) {
         console.error(e);
       }
